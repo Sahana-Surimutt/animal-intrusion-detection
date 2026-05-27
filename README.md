@@ -69,7 +69,7 @@ WILDLIFE1/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/Animal-intrusion-detection.git
+git clone https://github.com/Sahana-Surimutt/Animal-intrusion-detection.git
 cd Animal-intrusion-detection
 ```
 
