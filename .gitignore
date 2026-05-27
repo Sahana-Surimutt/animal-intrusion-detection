@@ -1,0 +1,45 @@
+# Python cache and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+
+# Large model files - DO NOT UPLOAD
+*.weights
+*.pt
+*.pth
+*.h5
+yolov3.weights
+yolov8n.pt
+
+
+# Database files
+*.db
+detections.db
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and temporary files
+*.log
+logs/
+temp/
+tmp/
+
+# Flask session files
+flask_session/
+
+# Uploaded files (if any)
+uploads/
