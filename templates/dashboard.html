@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - Wildlife Guardian AI{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-green-800 mb-4">📊 Analytics Dashboard</h2>
+        <p class="text-xl text-gray-600">Historical data analysis and detection insights</p>
+    </div>
+
+    <!-- Analytics Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center">
+            <div class="text-2xl text-green-600 mb-2">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">Today's Detections</h3>
+            <div id="todayDetections" class="text-3xl font-bold text-green-700 mt-2">0</div>
+            <div id="todayChange" class="text-sm text-gray-500 mt-1">+0% from yesterday</div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center">
+            <div class="text-2xl text-blue-600 mb-2">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">Weekly Total</h3>
+            <div id="weeklyTotal" class="text-3xl font-bold text-blue-700 mt-2">0</div>
+            <div class="text-sm text-gray-500 mt-1">Last 7 days</div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center">
+            <div class="text-2xl text-purple-600 mb-2">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">Top Animal</h3>
+            <div id="topAnimal" class="text-3xl font-bold text-purple-700 mt-2">None</div>
+            <div class="text-sm text-gray-500 mt-1">This week</div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center">
+            <div class="text-2xl text-orange-600 mb-2">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700">Peak Activity</h3>
+            <div id="peakHour" class="text-3xl font-bold text-orange-700 mt-2">--:--</div>
+            <div class="text-sm text-gray-500 mt-1">Most active hour</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Detection Trends Chart -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-chart-bar mr-3 text-green-600"></i>Detection Trends
+            </h3>
+            <div class="h-80">
+                <canvas id="trendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Animal Distribution -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-chart-pie mr-3 text-blue-600"></i>Animal Distribution
+            </h3>
+            <div class="h-80">
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Hourly Patterns -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-clock mr-3 text-purple-600"></i>Hourly Activity Patterns
+            </h3>
+            <div class="h-80">
+                <canvas id="hourlyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Risk Assessment -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-shield-alt mr-3 text-red-600"></i>Risk Assessment
+            </h3>
+            <div id="riskAssessment" class="space-y-4">
+                <!-- Risk levels will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Insights & Recommendations -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 mt-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-lightbulb mr-3 text-yellow-600"></i>AI Insights & Recommendations
+        </h3>
+        <div id="insightsContainer" class="space-y-4">
+            <!-- Insights will be populated here -->
+        </div>
+    </div>
+
+    <!-- Recent Detections Table -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 mt-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-list mr-3 text-gray-600"></i>Recent Detections
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="px-4 py-3 text-left">Animal</th>
+                        <th class="px-4 py-3 text-left">Confidence</th>
+                        <th class="px-4 py-3 text-left">Time</th>
+                        <th class="px-4 py-3 text-left">Source</th>
+                    </tr>
+                </thead>
+                <tbody id="recentDetectionsTable">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}
