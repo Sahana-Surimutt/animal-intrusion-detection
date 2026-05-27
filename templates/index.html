@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-green-800 mb-4">🌿Animal Monitoring</h2>
+        <p class="text-xl text-gray-600">Advanced AI-powered farm protection system with continuous detection</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+            <!-- Camera Feed & Controls -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-video mr-3 text-green-600"></i>Live Camera Feed
+                    </h3>
+                    <div class="flex space-x-4" id="controlButtons">
+                        <button onclick="startMonitoring()" id="startBtn" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg font-semibold text-white transition duration-200 transform hover:scale-105">
+                            <i class="fas fa-play mr-2"></i>Start Monitoring
+                        </button>
+                        <button onclick="stopMonitoring()" id="stopBtn" class="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-lg font-semibold text-white transition duration-200 transform hover:scale-105" disabled>
+                            <i class="fas fa-stop mr-2"></i>Stop
+                        </button>
+                        <button onclick="takeSnapshot()" class="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold text-white transition duration-200 transform hover:scale-105">
+                            <i class="fas fa-camera mr-2"></i>Snapshot
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Camera Feed -->
+                <div class="bg-black rounded-xl p-4 border-4 border-green-500">
+                    <img id="cameraFeed" src="" alt="Live Camera Feed" class="w-full h-96 object-cover rounded-lg">
+                    <div id="detectionOverlay" class="mt-4"></div>
+                </div>
+
+                <!-- Alert Status -->
+                <div id="alertStatus" class="mt-4 p-4 bg-green-100 border border-green-400 rounded-lg hidden">
+                    <div class="flex items-center">
+                        <i class="fas fa-bell text-green-600 text-xl mr-3"></i>
+                        <div>
+                            <h4 class="font-semibold text-green-800">Alert System Active</h4>
+                            <p class="text-green-600 text-sm">Voice alerts will play for each animal detection</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-upload mr-3 text-blue-600"></i>Upload Media for Analysis
+                </h3>
+                
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600 mb-4">Upload images or videos for animal detection analysis</p>
+                    
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input type="file" id="fileInput" name="file" accept=".jpg,.jpeg,.png,.mp4,.avi,.mov" class="hidden">
+                        <button type="button" onclick="document.getElementById('fileInput').click()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-200">
+                            <i class="fas fa-folder-open mr-2"></i>Choose File
+                        </button>
+                        <span id="fileName" class="ml-4 text-gray-600">No file chosen</span>
+                    </form>
+                    
+                    <p class="text-sm text-gray-500 mt-4">Supported formats: JPG, PNG, MP4, AVI, MOV (Max 50MB)</p>
+                </div>
+
+                <!-- Upload Results -->
+                <div id="uploadResults" class="mt-6 hidden">
+                    <h4 class="font-semibold text-lg mb-4">Analysis Results</h4>
+                    <div id="uploadDetections" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-2xl shadow-xl p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-history mr-3 text-purple-600"></i>Recent Activity
+                </h3>
+                <div id="activityLog" class="space-y-3 max-h-60 overflow-y-auto">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-info-circle text-2xl mb-2"></i>
+                        <p>No activity yet. Start monitoring to see detections here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-8">
+            <!-- Statistics -->
+            <div class="bg-white rounded-2xl shadow-xl p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-chart-bar mr-3 text-green-600"></i>Live Stats
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                        <div>
+                            <span class="text-gray-600">Total Detections</span>
+                            <div id="totalDetections" class="text-2xl font-bold text-green-700">0</div>
+                        </div>
+                        <i class="fas fa-bullseye text-green-500 text-2xl"></i>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                        <div>
+                            <span class="text-gray-600">Last Animal</span>
+                            <div id="lastAnimal" class="text-xl font-semibold text-blue-700">None</div>
+                        </div>
+                        <i class="fas fa-paw text-blue-500 text-2xl"></i>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                        <div>
+                            <span class="text-gray-600">System Status</span>
+                            <div id="systemStatus" class="text-lg font-semibold text-purple-700">Inactive</div>
+                        </div>
+                        <i class="fas fa-circle text-red-500 text-2xl" id="statusIcon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detectable Animals -->
+            <div class="bg-white rounded-2xl shadow-xl p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-paw mr-3 text-yellow-600"></i>Detectable Wildlife
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Dog -->
+                    <div class="animal-card bg-yellow-50 p-4 rounded-lg text-center border-2 border-yellow-200 transition duration-200 hover:border-yellow-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('dog')">
+                        <div class="text-3xl mb-2">🐕</div>
+                        <div class="font-semibold text-yellow-800">Dog</div>
+                        <div class="text-xs text-yellow-600 mt-1"></div>
+                    </div>
+                    
+                    <!-- Cat -->
+                    <div class="animal-card bg-pink-50 p-4 rounded-lg text-center border-2 border-pink-200 transition duration-200 hover:border-pink-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('cat')">
+                        <div class="text-3xl mb-2">🐈</div>
+                        <div class="font-semibold text-pink-800">Cat</div>
+                        <div class="text-xs text-pink-600 mt-1"></div>
+                    </div>
+                    
+                    <!-- Bird -->
+                    <div class="animal-card bg-blue-50 p-4 rounded-lg text-center border-2 border-blue-200 transition duration-200 hover:border-blue-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('bird')">
+                        <div class="text-3xl mb-2">🐦</div>
+                        <div class="font-semibold text-blue-800">Bird</div>
+                        <div class="text-xs text-blue-600 mt-1"></div>
+                    </div>
+                    
+                    <!-- Cow -->
+                    <div class="animal-card bg-green-50 p-4 rounded-lg text-center border-2 border-green-200 transition duration-200 hover:border-green-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('cow')">
+                        <div class="text-3xl mb-2">🐄</div>
+                        <div class="font-semibold text-green-800">Cow</div>
+                        <div class="text-xs text-green-600 mt-1"></div>
+                    </div>
+                    
+                    <!-- Horse -->
+                    <div class="animal-card bg-purple-50 p-4 rounded-lg text-center border-2 border-purple-200 transition duration-200 hover:border-purple-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('horse')">
+                        <div class="text-3xl mb-2">🐎</div>
+                        <div class="font-semibold text-purple-800">Horse</div>
+                        <div class="text-xs text-purple-600 mt-1"></div>
+                    </div>
+                    
+                    <!-- Sheep -->
+                    <div class="animal-card bg-indigo-50 p-4 rounded-lg text-center border-2 border-indigo-200 transition duration-200 hover:border-indigo-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('sheep')">
+                        <div class="text-3xl mb-2">🐑</div>
+                        <div class="font-semibold text-indigo-800">Sheep</div>
+                        <div class="text-xs text-indigo-600 mt-1"></div>
+                    </div>
+
+                    <!-- Elephant -->
+                    <div class="animal-card bg-gray-50 p-4 rounded-lg text-center border-2 border-gray-200 transition duration-200 hover:border-gray-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('elephant')">
+                        <div class="text-3xl mb-2">🐘</div>
+                        <div class="font-semibold text-gray-800">Elephant</div>
+                        <div class="text-xs text-gray-600 mt-1"></div>
+                    </div>
+
+                    <!-- Bear -->
+                    <div class="animal-card bg-red-50 p-4 rounded-lg text-center border-2 border-red-200 transition duration-200 hover:border-red-400 hover:shadow-md cursor-pointer" onclick="playAnimalSound('bear')">
+                        <div class="text-3xl mb-2">🐻</div>
+                        <div class="font-semibold text-red-800">Bear</div>
+                        <div class="text-xs text-red-600 mt-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl shadow-xl p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-bolt mr-3 text-orange-600"></i>Quick Actions
+                </h3>
+                <div class="space-y-3">
+                    <button onclick="testAlert()" class="w-full bg-orange-500 hover:bg-orange-600 py-3 rounded-lg font-semibold text-white transition duration-200 transform hover:scale-105">
+                        <i class="fas fa-bell mr-2"></i>Test Alert
+                    </button>
+                    <button onclick="viewAnalytics()" class="w-full bg-indigo-500 hover:bg-indigo-600 py-3 rounded-lg font-semibold text-white transition duration-200 transform hover:scale-105">
+                        <i class="fas fa-chart-line mr-2"></i>View Analytics
+                    </button>
+                    <button onclick="clearActivity()" class="w-full bg-gray-500 hover:bg-gray-600 py-3 rounded-lg font-semibold text-white transition duration-200 transform hover:scale-105">
+                        <i class="fas fa-trash mr-2"></i>Clear Log
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Sound -->
+<audio id="alertSound" preload="auto">
+    <source src="{{ url_for('static', filename='alerts/alert.mp3') }}" type="audio/mpeg">
+</audio>
+
+<script>
+    // Navigation function
+    function viewAnalytics() {
+        window.location.href = '/dashboard';
+    }
+</script>
+{% endblock %}
