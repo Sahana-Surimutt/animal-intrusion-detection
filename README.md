@@ -69,8 +69,8 @@ WILDLIFE1/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/Sahana-Surimutt/Animal-intrusion-detection.git
-cd Animal-intrusion-detection
+git clone https://github.com/Sahana-Surimutt/animal-intrusion-detection.git
+cd animal-intrusion-detection
 ```
 
 ---
@@ -238,7 +238,8 @@ Powered using:
 
 ### 🎯 Real-time Detection
 
-<img width="640" height="480" alt="snapshot_20251202_200804" src="https://github.com/user-attachments/assets/024eb87e-c92a-462a-ba33-add2c54db246" />
+<img width="532" height="570" alt="Screenshot 2026-05-27 224529" src="https://github.com/user-attachments/assets/bafaabae-ed04-4b61-af00-e0f797833c6f" />
+
 
 ---
 
